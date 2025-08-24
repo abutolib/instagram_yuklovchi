@@ -2,8 +2,8 @@ require("dotenv").config();
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require("axios");
 
-// const token = '6071099952:AAHXavzUgqV-eLHzQyfgWwJPAwGKtQegDI0';
-const token = process.env.TELEGRAM_TOKEN;
+const token = '6071099952:AAHXavzUgqV-eLHzQyfgWwJPAwGKtQegDI0';
+// const token = process.env.TELEGRAM_TOKEN;
 
 const bot = new TelegramBot(token, { polling: true });
 
@@ -14,7 +14,7 @@ async function InstgarmadanYuklovchilar(urlID) {
       url: 'https://instagram-story-downloader-media-downloader.p.rapidapi.com/index',
       params: { url: `${urlID}` },
       headers: {
-        'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
+        'X-RapidAPI-Key': "32fa350e92mshc528d8c5ab44229p14022bjsnee0d6caf1f2b",
         'X-RapidAPI-Host': 'instagram-story-downloader-media-downloader.p.rapidapi.com'
       }
     };
