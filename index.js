@@ -1,72 +1,47 @@
+require("dotenv").config();
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require("axios");
 
-// 🔑 Bot tokeningiz
-const token = "6071099952:AAHXavzUgqV-eLHzQyfgWwJPAwGKtQegDI0";
-
-// 🔑 RapidAPI kalitingiz
-const RAPID_API_KEY = "32fa350e92mshc528d8c5ab44229p14022bjsnee0d6caf1f2b";
+const token = '6071099952:AAHXavzUgqV-eLHzQyfgWwJPAwGKtQegDI0';
+// const token = process.env.TELEGRAM_TOKEN;
 
 const bot = new TelegramBot(token, { polling: true });
 
-async function InstagramDownloader(url) {
+async function InstgarmadanYuklovchilar(urlID) {
   try {
     const options = {
       method: 'GET',
-      url: 'https://instagram-downloader-download-instagram-videos-stories.p.rapidapi.com/index',
-      params: { url },
+      url: 'https://instagram-story-downloader-media-downloader.p.rapidapi.com/index',
+      params: { url: `${urlID}` },
       headers: {
-        'X-RapidAPI-Key': RAPID_API_KEY,
-        'X-RapidAPI-Host': 'instagram-downloader-download-instagram-videos-stories.p.rapidapi.com'
+        'X-RapidAPI-Key': "32fa350e92mshc528d8c5ab44229p14022bjsnee0d6caf1f2b",
+        'X-RapidAPI-Host': 'instagram-story-downloader-media-downloader.p.rapidapi.com'
       }
     };
 
-    const res = await axios.request(options);
-    return res.data;
+    return await axios.request(options)
   } catch (error) {
-    console.error(error);
-    return null;
+    console.log(error);
   }
 }
 
-bot.on('message', async (msg) => {
-  const chatId = msg.chat.id;
-  const text = msg.text;
 
-  if (text === '/start') {
-    bot.sendMessage(chatId, "👋 Salom! Menga istalgan Instagram linkini yuboring.\n\nMen sizga post, reels, story yoki IGTV ni yuklab beraman ✅");
-    return;
-  }
 
-  bot.sendMessage(chatId, "⏳ Yuklanmoqda, biroz kuting...");
-
-  const data = await InstagramDownloader(text);
-
-  if (!data || !data.media) {
-    bot.sendMessage(chatId, "❌ Yuklab bo‘lmadi. Bu private akkaunt bo‘lishi mumkin.");
-    return;
-  }
-
-  try {
-    if (Array.isArray(data.media)) {
-      // Karusel (ko‘p rasm/video)
-      for (let item of data.media) {
-        if (item.includes(".mp4")) {
-          await bot.sendVideo(chatId, item);
-        } else if (item.includes(".jpg")) {
-          await bot.sendPhoto(chatId, item);
-        }
-      }
-    } else {
-      // Bitta fayl (video yoki rasm)
-      if (data.media.includes(".mp4")) {
-        await bot.sendVideo(chatId, data.media);
-      } else if (data.media.includes(".jpg")) {
-        await bot.sendPhoto(chatId, data.media);
-      }
+bot.on('message', (msg) => {
+  const userID = msg.from.id
+  if(msg.text=='/start'){
+    bot.sendMessage(userID,'Salom bu bot instagramdan video yuklaydi')
+  }else{
+    try {
+      const video = InstgarmadanYuklovchilar(msg.text)
+      video.then(res => {
+        bot.sendVideo(userID,res.data.media,{caption:'Mana shu sizning videoyingiz!'})
+      }).catch(err=>{
+        bot.sendMessage(userID,'menimcha bu zakritiy akkaunt')
+      })
+    } catch (error) {
+      bot.sendMessage(userID,'menimcha bu zakritiy akkaunt')
     }
-  } catch (err) {
-    console.error(err);
-    bot.sendMessage(chatId, "❌ Xatolik yuz berdi.");
   }
 });
+
