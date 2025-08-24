@@ -2,7 +2,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const axios = require("axios");
 
 // 🔑 Bot tokeningiz
-const token = "6071099952:AAHXavzUgqV-eLHzQyfgWwJPAwGKtQegDI0'YING";
+const token = "6071099952:AAHXavzUgqV-eLHzQyfgWwJPAwGKtQegDI0";
 
 // 🔑 RapidAPI kalitingiz
 const RAPID_API_KEY = "32fa350e92mshc528d8c5ab44229p14022bjsnee0d6caf1f2b";
